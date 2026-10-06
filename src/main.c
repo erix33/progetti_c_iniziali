@@ -4,7 +4,7 @@
 
 int main(){
 
-    create_list(10);
+    Lista lista = create_list(10);
     
 
     return EXIT_SUCCESS;
