@@ -5,34 +5,62 @@
 Lista create_list(size_t capacity){
     Lista nuova_lista;
 
-    nuova_lista.data = malloc(sizeof(int) * capacity);
+    /*se la capacita digitata dall'utente dovesse risultare 0 la nostra
+    lista avrà una capacità di 4 elementi (a prova di ritardato) operatore ternario
+    se invece è maggiore di 0 il valore di cap iniziale rimane quello del parametro della 
+    funzione
+    */
+
+    size_t cap_iniziale = (capacity > 0) ? capacity : 4;
+
+    nuova_lista.data = malloc(sizeof(int) * cap_iniziale);
 
     if(nuova_lista.data == NULL){
         perror("errore allocazione memoria");
         exit(EXIT_FAILURE);
     }
 
-    nuova_lista.capacity = capacity;
+    nuova_lista.capacity = cap_iniziale;
     nuova_lista.size = 0;
-
-    /*
-    implementare funzione per aggiungere
-    singolarmente i numeri in una determinata
-    lista per esempio aggiungi_numero(nome_lista, 10);
-    */
 
     return nuova_lista;
 }
 
 void aggiungi_numero_alla_lista(Lista *lista, int numero){
+
+    if(lista->capacity == lista->size){
+        fprintf(stdout, "memoria esaurita...espandendo la memoria...\n");
+        size_t new_capacity = lista->capacity + 5;
+        int *tmp = realloc(lista->data, sizeof(int) * new_capacity);
+
+        if(tmp == NULL){
+            perror("errore allocazione memoria, non e' stato possibile aumentare la memoria e inserire il tuo numero\a\n");
+            return; // per non interrompere l'esezione del programma
+        }
+        lista->data = tmp;
+        lista->capacity = new_capacity;
+    }
+
     lista->data[lista->size] = numero;
     lista->size++;
 }
 
 void stampa_lista(const Lista *lista){
     printf("    ---CONTENUTO DELLA LISTA---\n\n");
-    for(int i = 0; i < lista->size; i++){
+    for(size_t i = 0; i < lista->size; i++){
         printf("%d\t", lista->data[i]);
     }
     printf("\n\n");
+}
+
+
+void libera_memoria_lista(Lista *lista){
+
+    if(lista == NULL) return;
+
+
+    free(lista->data);
+    lista->data = NULL;
+    lista->capacity = 0;
+    lista->size = 0;
 }
