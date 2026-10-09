@@ -13,7 +13,7 @@ Lista create_list(size_t capacity){
     }
 
     nuova_lista.capacity = capacity;
-    nuova_lista.size = capacity;
+    nuova_lista.size = 0;
 
     /*
     implementare funzione per aggiungere
@@ -21,16 +21,18 @@ Lista create_list(size_t capacity){
     lista per esempio aggiungi_numero(nome_lista, 10);
     */
 
-    for(size_t i = 0; i < nuova_lista.capacity; i++){
-        nuova_lista.data[i] = i + 1;
-    }
-
     return nuova_lista;
 }
 
+void aggiungi_numero_alla_lista(Lista *lista, int numero){
+    lista->data[lista->size] = numero;
+    lista->size++;
+}
 
 void stampa_lista(const Lista *lista){
+    printf("    ---CONTENUTO DELLA LISTA---\n\n");
     for(int i = 0; i < lista->size; i++){
         printf("%d\t", lista->data[i]);
     }
+    printf("\n\n");
 }

@@ -11,5 +11,6 @@ typedef struct{
 
 Lista create_list(size_t capacity);
 void stampa_lista(const Lista *lista);
+void aggiungi_numero_alla_lista(Lista *lista, int numero);
 
 #endif
