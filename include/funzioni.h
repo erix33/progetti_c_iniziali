@@ -10,5 +10,6 @@ typedef struct{
 }Lista;
 
 Lista create_list(size_t capacity);
+void stampa_lista(const Lista *lista);
 
 #endif
