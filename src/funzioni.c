@@ -9,8 +9,13 @@
     #define SLEEP_MS(ms) usleep((ms) * 1000) // accetta i millisecondi convertendoli in microsecondi
 #endif
 
-Lista create_list(size_t capacity){
-    Lista nuova_lista;
+Lista *create_list(size_t capacity){
+    Lista *nuova_lista = malloc(sizeof(Lista));
+
+    if(nuova_lista == NULL){
+        perror("errore allocazione memoria\n");
+        return NULL; // perchè è una funzione di tipo Lista*
+    }
 
     /*se la capacita digitata dall'utente dovesse risultare 0 la nostra
     lista avrà una capacità di 4 elementi (a prova di ritardato) operatore ternario
@@ -20,15 +25,16 @@ Lista create_list(size_t capacity){
 
     size_t cap_iniziale = (capacity > 0) ? capacity : 4;
 
-    nuova_lista.data = malloc(sizeof(int) * cap_iniziale);
+    nuova_lista->data = malloc(sizeof(int) * cap_iniziale);
 
-    if(nuova_lista.data == NULL){
+    if(nuova_lista->data == NULL){
         perror("errore allocazione memoria");
+        free(nuova_lista);
         exit(EXIT_FAILURE);
     }
 
-    nuova_lista.capacity = cap_iniziale;
-    nuova_lista.size = 0;
+    nuova_lista->capacity = cap_iniziale;
+    nuova_lista->size = 0;
 
     return nuova_lista;
 }
@@ -79,6 +85,8 @@ void libera_memoria_lista(Lista *lista){
 
     lista->capacity = 0;
     lista->size = 0;
+
+    free(lista);
 
     printf("memoria liberata correttamente\n");
 }
