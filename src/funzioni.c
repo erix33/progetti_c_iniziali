@@ -1,12 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "funzioni.h"
+
+/* il preprocessore sostituisce tutte le occorrenze di SLEEP_MS
+e in base al sistema operativo sostituisce il valore (il * 1000 è necessario perchè
+ la funzione usleep lavora in microsecondi)
+*/
+
 #ifdef _WIN32
     #include <Windows.h>
     #define SLEEP_MS(ms) Sleep(ms)
 #else
     #include <unistd.h>
-    #define SLEEP_MS(ms) usleep((ms) * 1000) // accetta i millisecondi convertendoli in microsecondi
+    #define SLEEP_MS(ms) usleep((ms) * 1000)
 #endif
 
 Lista create_list(size_t capacity){
