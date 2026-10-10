@@ -1,6 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "funzioni.h"
+#ifdef _WIN32
+    #include <Windows.h>
+    #define SLEEP_MS(ms) Sleep(ms)
+#else
+    #include <unistd.h>
+    #define SLEEP_MS(ms) usleep((ms) * 1000) // accetta i millisecondi convertendoli in microsecondi
+#endif
 
 Lista create_list(size_t capacity){
     Lista nuova_lista;
@@ -28,8 +35,11 @@ Lista create_list(size_t capacity){
 
 void aggiungi_numero_alla_lista(Lista *lista, int numero){
 
+    if(lista == NULL) return;
+
     if(lista->capacity == lista->size){
         fprintf(stdout, "memoria esaurita...espandendo la memoria...\n");
+        SLEEP_MS(2000);
         size_t new_capacity = lista->capacity + 5;
         int *tmp = realloc(lista->data, sizeof(int) * new_capacity);
 
@@ -46,9 +56,12 @@ void aggiungi_numero_alla_lista(Lista *lista, int numero){
 }
 
 void stampa_lista(const Lista *lista){
+
+    if(lista == NULL) return;
+
     printf("    ---CONTENUTO DELLA LISTA---\n\n");
     for(size_t i = 0; i < lista->size; i++){
-        printf("%d\t", lista->data[i]);
+        printf("[%d]\t", lista->data[i]);
     }
     printf("\n\n");
 }
@@ -58,9 +71,14 @@ void libera_memoria_lista(Lista *lista){
 
     if(lista == NULL) return;
 
+    printf("sto liberando la lista...\n");
+    SLEEP_MS(1000);
 
     free(lista->data);
     lista->data = NULL;
+
     lista->capacity = 0;
     lista->size = 0;
+
+    printf("memoria liberata correttamente\n");
 }
