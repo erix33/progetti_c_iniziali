@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include "funzioni.h"
 
+// le macro rendono il codice più mantenibile nel tempo
+
+#define DIMENSIONE_MINIMA_LISTA 4 
+#define NUMERO_ELEMENTI_AGGIUNTI 5
+
 /* il preprocessore sostituisce tutte le occorrenze di SLEEP_MS
 e in base al sistema operativo sostituisce il valore (il * 1000 è necessario perchè
  la funzione usleep lavora in microsecondi)
@@ -9,7 +14,7 @@ e in base al sistema operativo sostituisce il valore (il * 1000 è necessario pe
 
 #ifdef _WIN32
     #include <Windows.h>
-    #define SLEEP_MS(ms) Sleep(ms)
+    #define SLEEP_MS(ms) Sleep((DWORD)(ms))
 #else
     #include <unistd.h>
     #define SLEEP_MS(ms) usleep((ms) * 1000)
@@ -19,7 +24,7 @@ Lista *create_list(size_t capacity){
     Lista *nuova_lista = malloc(sizeof(Lista));
 
     if(nuova_lista == NULL){
-        perror("errore allocazione memoria\n");
+        perror("errore allocazione memoria");
         return NULL; // perchè è una funzione di tipo Lista*
     }
 
@@ -29,14 +34,14 @@ Lista *create_list(size_t capacity){
     funzione
     */
 
-    size_t cap_iniziale = (capacity > 0) ? capacity : 4;
+    size_t cap_iniziale = (capacity > 0) ? capacity : DIMENSIONE_MINIMA_LISTA;
 
     nuova_lista->data = malloc(sizeof(int) * cap_iniziale);
 
     if(nuova_lista->data == NULL){
         perror("errore allocazione memoria");
         free(nuova_lista);
-        exit(EXIT_FAILURE);
+        return NULL;
     }
 
     nuova_lista->capacity = cap_iniziale;
@@ -50,13 +55,13 @@ void aggiungi_numero_alla_lista(Lista *lista, int numero){
     if(lista == NULL) return;
 
     if(lista->capacity == lista->size){
-        fprintf(stdout, "memoria esaurita...espandendo la memoria...\n");
+        fprintf(stderr, "memoria esaurita...espandendo la memoria...\n");
         SLEEP_MS(2000);
-        size_t new_capacity = lista->capacity + 5;
+        size_t new_capacity = lista->capacity + NUMERO_ELEMENTI_AGGIUNTI;
         int *tmp = realloc(lista->data, sizeof(int) * new_capacity);
 
         if(tmp == NULL){
-            perror("errore allocazione memoria, non e' stato possibile aumentare la memoria e inserire il tuo numero\a\n");
+            perror("errore allocazione memoria, non e' stato possibile aumentare la memoria e inserire il tuo numero\a");
             return; // per non interrompere l'esezione del programma
         }
         lista->data = tmp;
